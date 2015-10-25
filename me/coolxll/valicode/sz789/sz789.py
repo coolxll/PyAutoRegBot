@@ -9,14 +9,14 @@ Created on 2015-10-24
 import ctypes
 from os.path import join, dirname
 from me.coolxll.valicode.IValidateCodeRecognize import AbstractValidatorRecognizer
-from me.coolxll.valicode.sz789.config import username,password
+from me.coolxll.config.config import SZ789_USERNAME,SZ789_PASSWORD
 
 dll = ctypes.windll.LoadLibrary(join(dirname(__file__),'dc.dll'))
 
 class SZ789(AbstractValidatorRecognizer):
     
     def __init__(self):
-        self.sz789 = dcVerCode(username, password)
+        self.sz789 = dcVerCode(SZ789_USERNAME, SZ789_PASSWORD)
         
     def rec_buf(self,filebuf):
         return self.sz789.recByte(filebuf)
@@ -30,7 +30,7 @@ class dcVerCode:
     #user QQ超人打码账号
     #pwd QQ超人打码密码
     #softId 软件ID 缺省为0,作者务必提交softId,以保证分成
-    def __init__(self,user,pwd,softId="18162"):
+    def __init__(self,user,pwd,softId='18162'):
         self.user = user
         self.pwd = pwd
         self.softId = softId

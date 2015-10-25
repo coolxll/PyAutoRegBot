@@ -6,7 +6,7 @@ Created on 2015年10月24日
 @author: Conan
 '''
 import requests
-from me.coolxll.sms.f02.config import username,password
+from me.coolxll.config.config import AIMA_USERNAME,AIMA_PASSWORD
 import token
 import logging
 import time
@@ -26,7 +26,7 @@ class Aima(object):
         self.session = requests.Session()
         self.login()
         
-    def login(self,username=username,password=password):
+    def login(self,username=AIMA_USERNAME,password=AIMA_PASSWORD):
         resp = self.session.post(self.BASE_URL + 'loginIn',{
             "uid":username,
             "pwd":password
@@ -38,7 +38,7 @@ class Aima(object):
         else:
             self.logger.error(resp.text)
             
-    def getMobileNum(self,pid,username=username):
+    def getMobileNum(self,pid,username=AIMA_USERNAME):
         '''
         '''
         resp = self.session.post(self.BASE_URL + 'getMobilenum',{
@@ -50,7 +50,7 @@ class Aima(object):
             mobile,token = resp.text.split('|')
         return mobile
     
-    def getVcodeAndReleaseMobile(self,mobile,username=username):
+    def getVcodeAndReleaseMobile(self,mobile,username=AIMA_USERNAME):
         while True:
             resp = self.session.post(self.BASE_URL + 'getVcodeAndReleaseMobile',{
                 "mobile":mobile,
