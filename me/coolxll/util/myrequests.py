@@ -41,6 +41,7 @@ class CustomSession(Session):
         #Automatically Add Referer
         if self.last_url:
             self.headers.update({'Referer':self.last_url})
+        self.last_url = url
         return super(CustomSession, self).request(method, url,
                                                   params,
                                                   data,
@@ -56,4 +57,3 @@ class CustomSession(Session):
                                                   verify,
                                                   cert,
                                                   json)
-        self.last_url = url

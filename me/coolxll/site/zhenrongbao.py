@@ -48,7 +48,7 @@ class Zhenrongbao(object):
             self.logger.error('Zhenrongbao Verify Code parse error')
             #self.verify.reportError(imageId)
         self.session.get(self.BASE_URL + "/account/registering")
-        resp = self.session.post("https://www.zhenrongbao.com/account/sendidentitycodenew",{
+        resp = self.session.post(self.BASE_URL + "/account/sendidentitycodenew",{
             "mobile":mobileno,
             "type":0
         })
