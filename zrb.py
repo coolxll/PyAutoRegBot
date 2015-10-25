@@ -14,4 +14,4 @@ if __name__ == '__main__':
     times = 1
     z = Zhenrongbao()
     for _ in xrange(times):
-        z.reg('18621369382')
+        z.reg('13800000000')
