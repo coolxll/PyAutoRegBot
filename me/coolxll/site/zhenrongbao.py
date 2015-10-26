@@ -10,6 +10,7 @@ import re
 from me.coolxll.util.myrequests import CustomSession
 from me.coolxll.valicode.sz789.sz789 import SZ789
 from me.coolxll.sms.f02.aima import Aima
+import random
 
 ZHENRONGBAO_AIMA_PID = 9687
 class Zhenrongbao(object):
@@ -32,6 +33,30 @@ class Zhenrongbao(object):
             return result.group("vmsg")
         return ""
     
+    def regwap(self,invitemobile):
+        self.session.get(self.BASE_URL + '/wap/register')
+        filebuf = self.session.get(self.BASE_URL + "/verification/qcode?rand={}".format(random.random())).content
+        yzm,imageId = self.verify.rec_buf(filebuf)
+        self.logger.debug("Verify Code:{}".format(yzm))
+        mobileno = self.sms.getMobileNum(ZHENRONGBAO_AIMA_PID)
+        resp = self.session.post(self.BASE_URL + '/wap/preresetpassword',{
+            "user_name":mobileno,
+            "qcode":yzm,
+            "_access_token":""
+        })
+        if resp.json().get('error_no') == 0:
+            self.logger.info('Zhenrongbao Verify Code Success')
+        else:
+            self.logger.error('Zhenrongbao Verify Code parse error')
+            self.verify.reportError(imageId)
+            return
+        resp = self.session.post(self.BASE_URL + "/account/sendidentitycodenew",{
+            "mobile":mobileno,
+            "type":0,
+            "_access_token":""
+        })
+        self.sendCodeAndRegister(mobileno, invitemobile)
+        
     def reg(self,invitemobile):
         self.session.get(self.BASE_URL + "/account/register")
         filebuf = self.session.get(self.BASE_URL + "/verification/qcode").content
@@ -46,7 +71,11 @@ class Zhenrongbao(object):
             self.logger.info('Zhenrongbao Verify Code Success')
         else:
             self.logger.error('Zhenrongbao Verify Code parse error')
-            #self.verify.reportError(imageId)
+            self.verify.reportError(imageId)
+            return
+        self.sendCodeAndRegister(mobileno, invitemobile)
+    
+    def sendCodeAndRegister(self,mobileno,invitemobile):
         self.session.get(self.BASE_URL + "/account/registering")
         resp = self.session.post(self.BASE_URL + "/account/sendidentitycodenew",{
             "mobile":mobileno,
@@ -56,6 +85,8 @@ class Zhenrongbao(object):
             self.logger.info("Send verify message to {} success".format(mobileno))
         else:
             self.logger.error(resp.json().get("error_message"))
+            self.sms.releaseMobile(mobileno)
+            return
         codemsg = self.sms.getVcodeAndReleaseMobile(mobileno)
         codemsg = self.parseCodeMsg(codemsg)
         resp = self.session.post(self.BASE_URL + '/account/registerusernew', {

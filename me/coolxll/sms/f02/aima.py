@@ -56,10 +56,18 @@ class Aima(object):
                 "mobile":mobile,
                 "uid":username,
                 "token":self.token,
-                "author_uid":"coolxll"
+                "author_uid":"coolxlldev"
             })
             if resp.text != 'not_receive':
                 return resp.text.split('|')[1]
                 break
             #Sleep 0.5 seconds
             time.sleep(0.5)
+    
+    def releaseMobile(self,mobile,username=AIMA_USERNAME):
+        resp = self.session.post(self.BASE_URL + 'cancelSMSRecv',{
+            "uid":username,
+            "token":self.token,
+            "mobile":mobile
+        })
+        return resp.text

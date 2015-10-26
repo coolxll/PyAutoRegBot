@@ -23,6 +23,9 @@ class CustomSession(Session):
     def setChromeUA(self):
         self.headers.update({'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'})
     
+    def setiPhoneUA(self):
+        self.headers.update({'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4'})
+    
     def request(self, method, url,
         params=None,
         data=None,
