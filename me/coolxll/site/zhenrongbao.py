@@ -22,7 +22,6 @@ class Zhenrongbao(object):
         TODO: sms support strange, include sms in the constructor
         '''
         self.session = CustomSession()
-        self.session.setChromeUA()
         self.sms = Aima()
         self.verify = SZ789()
         
@@ -34,52 +33,52 @@ class Zhenrongbao(object):
         return ""
     
     def regwap(self,invitemobile):
+        self.session.setiPhoneUA()
         self.session.get(self.BASE_URL + '/wap/register')
-        filebuf = self.session.get(self.BASE_URL + "/verification/qcode?rand={}".format(random.random())).content
-        yzm,imageId = self.verify.rec_buf(filebuf)
-        self.logger.debug("Verify Code:{}".format(yzm))
-        mobileno = self.sms.getMobileNum(ZHENRONGBAO_AIMA_PID)
-        resp = self.session.post(self.BASE_URL + '/wap/preresetpassword',{
-            "user_name":mobileno,
-            "qcode":yzm,
-            "_access_token":""
-        })
-        if resp.json().get('error_no') == 0:
-            self.logger.info('Zhenrongbao Verify Code Success')
-        else:
-            self.logger.error('Zhenrongbao Verify Code parse error')
-            self.verify.reportError(imageId)
-            return
+        while True:
+            filebuf = self.session.get(self.BASE_URL + "/verification/qcode?rand={}".format(random.random())).content
+            yzm,imageId = self.verify.rec_buf(filebuf)
+            self.logger.debug("Verify Code:{}".format(yzm))
+            mobileno = self.sms.getMobileNum(ZHENRONGBAO_AIMA_PID)
+            resp = self.session.post(self.BASE_URL + '/wap/preresetpassword',{
+                "user_name":mobileno,
+                "qcode":yzm,
+                "_access_token":""
+            })
+            if resp.json().get('error_no') == 0:
+                self.logger.info('Zhenrongbao Verify Code Success')
+                break
+            else:
+                self.logger.error('Zhenrongbao Verify Code parse error')
+                self.verify.reportError(imageId)
+        self.sendCodeAndRegister(mobileno, invitemobile)
+        
+    def reg(self,invitemobile):
+        self.session.setChromeUA()
+        self.session.get(self.BASE_URL + "/account/register")
+        while True:
+            filebuf = self.session.get(self.BASE_URL + "/verification/qcode").content
+            yzm,imageId = self.verify.rec_buf(filebuf)
+            self.logger.debug("Verify Code:{}".format(yzm))
+            mobileno = self.sms.getMobileNum(ZHENRONGBAO_AIMA_PID)
+            resp = self.session.post(self.BASE_URL + "/account/preregisteruser",{
+                "user_name":mobileno,
+                "qcode":yzm
+            })
+            if resp.json().get('error_no') == 0:
+                self.logger.info('Zhenrongbao Verify Code Success')
+                break
+            else:
+                self.logger.error('Zhenrongbao Verify Code parse error')
+                self.verify.reportError(imageId)
+        self.sendCodeAndRegister(mobileno, invitemobile)
+    
+    def sendCodeAndRegister(self,mobileno,invitemobile):
+        #self.session.get(self.BASE_URL + "/account/registering")
         resp = self.session.post(self.BASE_URL + "/account/sendidentitycodenew",{
             "mobile":mobileno,
             "type":0,
             "_access_token":""
-        })
-        self.sendCodeAndRegister(mobileno, invitemobile)
-        
-    def reg(self,invitemobile):
-        self.session.get(self.BASE_URL + "/account/register")
-        filebuf = self.session.get(self.BASE_URL + "/verification/qcode").content
-        yzm,imageId = self.verify.rec_buf(filebuf)
-        self.logger.debug("Verify Code:{}".format(yzm))
-        mobileno = self.sms.getMobileNum(ZHENRONGBAO_AIMA_PID)
-        resp = self.session.post(self.BASE_URL + "/account/preregisteruser",{
-            "user_name":mobileno,
-            "qcode":yzm
-        })
-        if resp.json().get('error_no') == 0:
-            self.logger.info('Zhenrongbao Verify Code Success')
-        else:
-            self.logger.error('Zhenrongbao Verify Code parse error')
-            self.verify.reportError(imageId)
-            return
-        self.sendCodeAndRegister(mobileno, invitemobile)
-    
-    def sendCodeAndRegister(self,mobileno,invitemobile):
-        self.session.get(self.BASE_URL + "/account/registering")
-        resp = self.session.post(self.BASE_URL + "/account/sendidentitycodenew",{
-            "mobile":mobileno,
-            "type":0
         })
         if not resp.json().get("error_message"):
             self.logger.info("Send verify message to {} success".format(mobileno))

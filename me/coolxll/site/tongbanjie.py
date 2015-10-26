@@ -56,14 +56,17 @@ class Tongbanjie(object):
             'invitePhone':invitephone
         })
         token = r.json().get('token')
-        r = self.session.post(self.BASE_URL + '/web/invite/inviteValidatepicture',{
-            'pictureCode':code,
-            't':timestamp
-        })
-        if r.json().get('status') == 0:
-            self.logger.info('Verify code Success')
-        else:
-            self.verify.reportError(imageId)
+        while True:
+            r = self.session.post(self.BASE_URL + '/web/invite/inviteValidatepicture',{
+                'pictureCode':code,
+                't':timestamp
+            })
+            if r.json().get('status') == 0:
+                self.logger.info('Verify code Success')
+                break
+            else:
+                self.logger.error('Verify code parse Error')
+                self.verify.reportError(imageId)
         r = self.session.post(self.BASE_URL + '/web/invite/sendInviteSmscode',{
             'phone':mobileno,
             'token':token
