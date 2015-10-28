@@ -67,6 +67,8 @@ class Tongbanjie(object):
             else:
                 self.logger.error('Verify code parse Error')
                 self.verify.reportError(imageId)
+                timestamp = str(int(time.time()*1000))
+                code,imageId = self.getVerifyCode(timestamp)
         r = self.session.post(self.BASE_URL + '/web/invite/sendInviteSmscode',{
             'phone':mobileno,
             'token':token
