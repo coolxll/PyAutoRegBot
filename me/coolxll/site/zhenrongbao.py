@@ -11,18 +11,24 @@ from me.coolxll.util.myrequests import CustomSession
 from me.coolxll.valicode.sz789.sz789 import SZ789
 from me.coolxll.sms.f02.aima import Aima
 import random
+from me.coolxll.sms.zmyzm.zhuoma import Zhuoma
+from me.coolxll import sms
 
 ZHENRONGBAO_AIMA_PID = 9687
+ZHENRONGBAO_ZHUOMA_PID = 3444
 class Zhenrongbao(object):
     
     BASE_URL = "https://www.zhenrongbao.com"
     logger = logging.getLogger(__name__)
-    def  __init__(self):
+    def  __init__(self,sms=None):
         '''
         TODO: sms support strange, include sms in the constructor
         '''
         self.session = CustomSession()
-        self.sms = Aima()
+        if sms:
+            self.sms = sms
+        else:
+            self.sms = Zhuoma()
         self.verify = SZ789()
         
     def parseCodeMsg(self,codemsg):
@@ -39,7 +45,12 @@ class Zhenrongbao(object):
             filebuf = self.session.get(self.BASE_URL + "/verification/qcode?rand={}".format(random.random())).content
             yzm,imageId = self.verify.rec_buf(filebuf)
             self.logger.debug("Verify Code:{}".format(yzm))
-            mobileno = self.sms.getMobileNum(ZHENRONGBAO_AIMA_PID)
+            ZHENRONGBAO_PID = 0
+            if isinstance(self.sms, Aima):
+                ZHENRONGBAO_PID = ZHENRONGBAO_AIMA_PID
+            elif isinstance(self.sms, Zhuoma):
+                ZHENRONGBAO_PID = ZHENRONGBAO_ZHUOMA_PID
+            mobileno = self.sms.getMobileNum(ZHENRONGBAO_PID)
             resp = self.session.post(self.BASE_URL + '/wap/preresetpassword',{
                 "user_name":mobileno,
                 "qcode":yzm,

@@ -6,8 +6,11 @@ Created on 2015年10月25日
 @author: Conan
 '''
 
-AIMA_USERNAME = 'yourusername'
-AIMA_PASSWORD = 'yourpassword'
+AIMA_USERNAME = ''
+AIMA_PASSWORD = ''
 
-SZ789_USERNAME = 'yourusername'
-SZ789_PASSWORD = 'yourpassword'
+ZHUOMA_USERNAME = ''
+ZHUOMA_PASSWORD = ''
+
+SZ789_USERNAME = ''
+SZ789_PASSWORD = ''

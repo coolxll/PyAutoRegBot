@@ -59,6 +59,7 @@ class Aima(object):
                 "author_uid":"coolxlldev"
             })
             if resp.text != 'not_receive':
+                print resp.text
                 return resp.text.split('|')[1]
                 break
             #Sleep 0.5 seconds

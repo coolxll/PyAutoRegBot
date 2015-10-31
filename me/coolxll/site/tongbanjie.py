@@ -11,8 +11,11 @@ from me.coolxll.valicode.sz789.sz789 import SZ789
 import time
 import logging
 import re
+from me.coolxll.sms.zmyzm.zhuoma import Zhuoma
+from me.coolxll import sms
 
 TONGBANJIE_AIMA_PID = 1428
+TONGBANJIE_ZHUOMA_PID = 5042
 
 class Tongbanjie(object):
     '''
@@ -20,7 +23,7 @@ class Tongbanjie(object):
     '''
     logger = logging.getLogger(__name__)
     BASE_URL = 'http://account.tongbanjie.com'
-    def __init__(self):
+    def __init__(self,sms=None):
         '''
         Constructor
         '''
@@ -29,7 +32,10 @@ class Tongbanjie(object):
         self.session.headers.update({
             'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
         })
-        self.sms = Aima()
+        if sms:
+            self.sms = sms
+        else:
+            self.sms = Zhuoma()
         self.verify = SZ789()
         
     def getVerifyCode(self,timestamp):
@@ -49,7 +55,12 @@ class Tongbanjie(object):
         timestamp = str(int(time.time()*1000))
         self.session.get(invitelink)
         code,imageId = self.getVerifyCode(timestamp)
-        mobileno = self.sms.getMobileNum(TONGBANJIE_AIMA_PID)
+        TONGBANJIE_PID = 0
+        if isinstance(self.sms, Aima):
+            TONGBANJIE_PID = TONGBANJIE_AIMA_PID
+        elif isinstance(self.sms, Zhuoma):
+            TONGBANJIE_PID = TONGBANJIE_ZHUOMA_PID
+        mobileno = self.sms.getMobileNum(TONGBANJIE_PID)
         self.logger.info('Get Mobile No for Tongbanjie:{}'.format(mobileno))
         r = self.session.post(self.BASE_URL + '/web/invite/inviteValidatephone',{
             'phone':mobileno,
