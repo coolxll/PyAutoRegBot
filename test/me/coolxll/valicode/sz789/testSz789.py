@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
 
     def testSZ789(self):
         valicoder = SZ789()
-        code,imageid = valicoder.rec_file(join(dirname(__file__),'teszhenrongbaog'))
+        code,imageid = valicoder.rec_file(join(dirname(__file__),'test.jpg'))
         self.assertEqual(code, 'rueq', 'The Captcha is RUEQ')
 
 

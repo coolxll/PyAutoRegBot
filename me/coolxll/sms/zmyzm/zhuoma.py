@@ -59,7 +59,7 @@ class Zhuoma(object):
                 "author_uid":"coolxlldev1988"
             })
             if resp.text != 'not_receive':
-                print resp.text
+                logging.debug(resp.text)
                 return resp.text.split('|')[1]
                 break
             #Sleep 0.5 seconds
