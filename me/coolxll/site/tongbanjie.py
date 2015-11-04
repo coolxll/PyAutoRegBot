@@ -12,12 +12,12 @@ import time
 import logging
 import re
 from me.coolxll.sms.zmyzm.zhuoma import Zhuoma
-from me.coolxll import sms
+from me.coolxll.site.basesite import BaseSite
 
 TONGBANJIE_AIMA_PID = 1428
 TONGBANJIE_ZHUOMA_PID = 5042
 
-class Tongbanjie(object):
+class Tongbanjie(BaseSite):
     '''
     classdocs
     '''
@@ -27,16 +27,10 @@ class Tongbanjie(object):
         '''
         Constructor
         '''
-        self.session = CustomSession()
-        self.session.setChromeUA()
+        super(Tongbanjie,self).__init__()
         self.session.headers.update({
             'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
         })
-        if sms:
-            self.sms = sms
-        else:
-            self.sms = Zhuoma()
-        self.verify = SZ789()
         
     def getVerifyCode(self,timestamp):
         r = self.session.get(self.BASE_URL + "/generateImageCode?t={}".format(timestamp))

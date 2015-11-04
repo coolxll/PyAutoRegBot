@@ -35,13 +35,6 @@ class CGTZDZ(object):
             return result.group("vmsg")
         return ""
         
-    def setProxy(self):
-        proxies = {
-              "http": "http://localhost:8899",
-              "https": "http://localhost:8899",
-            }
-        self.session.proxies.update(proxies);
-    
     def dianzan(self,user):
         mobileno = self.sms.getMobileNum(self.CGTZDZ_ZHUOMA_PID)
         self.session.post(self.BASE_URL + '/activity/MobileDBLEleven.html', 

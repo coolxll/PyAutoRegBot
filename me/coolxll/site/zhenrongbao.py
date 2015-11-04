@@ -12,11 +12,12 @@ from me.coolxll.valicode.sz789.sz789 import SZ789
 from me.coolxll.sms.f02.aima import Aima
 import random
 from me.coolxll.sms.zmyzm.zhuoma import Zhuoma
-from me.coolxll import sms
+from me.coolxll.site.basesite import BaseSite
 
 ZHENRONGBAO_AIMA_PID = 9687
 ZHENRONGBAO_ZHUOMA_PID = 3444
-class Zhenrongbao(object):
+
+class Zhenrongbao(BaseSite):
     
     BASE_URL = "https://www.zhenrongbao.com"
     logger = logging.getLogger(__name__)
@@ -24,12 +25,7 @@ class Zhenrongbao(object):
         '''
         TODO: sms support strange, include sms in the constructor
         '''
-        self.session = CustomSession()
-        if sms:
-            self.sms = sms
-        else:
-            self.sms = Zhuoma()
-        self.verify = SZ789()
+        super(Zhenrongbao,self).__init__(sms)
         
     def parseCodeMsg(self,codemsg):
         pattern = re.compile(u'您的验证码为(?P<vmsg>\d{6})')
@@ -61,7 +57,7 @@ class Zhenrongbao(object):
                 break
             else:
                 self.logger.error('Zhenrongbao Verify Code parse error')
-                self.verify.reportError(imageId)
+                #self.verify.reportError(imageId)
         self.sendCodeAndRegister(mobileno, invitemobile)
         
     def reg(self,invitemobile):

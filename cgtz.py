@@ -10,8 +10,9 @@ from me.coolxll.site.cgtzdz import CGTZDZ
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    times = 10
+    times = 3
     for _ in xrange(times):
         cgtz = CGTZDZ()
-        cgtz.setProxy()
+        #分享链接里面的最后几位
+        #http://m.cgtz.com/activity/DBLElevenLike.html?shareuser=bjHnguB
         cgtz.dianzan('bjHnguB')

@@ -26,6 +26,15 @@ class CustomSession(Session):
     def setiPhoneUA(self):
         self.headers.update({'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12F70 Safari/600.1.4'})
     
+    def setProxy(self):
+        #Fiddler Proxy for Debug usage
+        proxies = {
+              "http": "http://localhost:8899",
+              "https": "http://localhost:8899",
+            }
+        self.proxies.update(proxies)
+        self.verify = False
+    
     def request(self, method, url,
         params=None,
         data=None,

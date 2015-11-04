@@ -5,13 +5,12 @@ Created on 2015年10月24日
 
 @author: Conan
 '''
-import requests
 from me.coolxll.config.config import AIMA_USERNAME,AIMA_PASSWORD
-import token
 import logging
 import time
+from me.coolxll.sms.basesms import BaseSms
 
-class Aima(object):
+class Aima(BaseSms):
     '''
     Aima for receiving verify sms
     '''
@@ -23,32 +22,13 @@ class Aima(object):
         '''
         Initialize
         '''
-        self.session = requests.Session()
-        self.login()
+        super(Aima,self).__init__()
         
     def login(self,username=AIMA_USERNAME,password=AIMA_PASSWORD):
-        resp = self.session.post(self.BASE_URL + 'loginIn',{
-            "uid":username,
-            "pwd":password
-        })
-        if '|' in resp.text and username in resp.text:
-            username,token = resp.text.split('|')
-            self.token = token
-            return token
-        else:
-            self.logger.error(resp.text)
+        return super(Aima,self).login(username,password)
             
-    def getMobileNum(self,pid,username=AIMA_USERNAME):
-        '''
-        '''
-        resp = self.session.post(self.BASE_URL + 'getMobilenum',{
-            "pid":pid,
-            "uid":username,
-            "token":self.token
-        })
-        if '|' in resp.text:
-            mobile,token = resp.text.split('|')
-        return mobile
+    def getMobileNum(self,pid=None,username=AIMA_USERNAME):
+        return super(Aima,self).getMobileNum(pid,username)
     
     def getVcodeAndReleaseMobile(self,mobile,username=AIMA_USERNAME):
         while True:
