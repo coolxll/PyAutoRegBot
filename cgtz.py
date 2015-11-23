@@ -10,7 +10,7 @@ from me.coolxll.site.cgtzdz import CGTZDZ
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    times = 3
+    times = 1
     for _ in xrange(times):
         cgtz = CGTZDZ()
         #分享链接里面的最后几位

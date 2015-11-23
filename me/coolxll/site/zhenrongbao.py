@@ -80,7 +80,7 @@ class Zhenrongbao(BaseSite):
                 self.verify.reportError(imageId)
         self.sendCodeAndRegister(mobileno, invitemobile)
     
-    def sendCodeAndRegister(self,mobileno,invitemobile):
+    def sendCodeAndRegister(self,mobileno,recommender_sequence_id):
         #self.session.get(self.BASE_URL + "/account/registering")
         resp = self.session.post(self.BASE_URL + "/account/sendidentitycodenew",{
             "mobile":mobileno,
@@ -99,7 +99,7 @@ class Zhenrongbao(BaseSite):
             "user_name":mobileno,
             "code":codemsg,
             "passwd":"pass2015",
-            "recommender":invitemobile
+            "recommender_sequence_id":recommender_sequence_id
         })
         if resp.json().get("error_no") == 0:
             self.logger.info("Register New User Successful, Username {}".format(mobileno))

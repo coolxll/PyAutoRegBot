@@ -32,30 +32,31 @@ class BaseSms(object):
         })
         if '|' in resp.text and username in resp.text:
             username,token = resp.text.split('|')
+            self.username = username
             self.token = token
             return token
         else:
             self.logger.error(resp.text)
             
-    def getMobileNum(self,pid,username):
+    def getMobileNum(self,pid):
         '''
         '''
         if not pid:
             pid = self.pid
         resp = self.session.post(self.BASE_URL + 'getMobilenum',{
             "pid":pid,
-            "uid":username,
+            "uid":self.username,
             "token":self.token
         })
         if '|' in resp.text:
             mobile,token = resp.text.split('|')
         return mobile
     
-    def getVcodeAndReleaseMobile(self,mobile,username):
+    def getVcodeAndReleaseMobile(self,mobile):
         while True:
             resp = self.session.post(self.BASE_URL + 'getVcodeAndReleaseMobile',{
                 "mobile":mobile,
-                "uid":username,
+                "uid":self.username,
                 "token":self.token,
                 "author_uid":"coolxlldev"
             })
@@ -66,5 +67,5 @@ class BaseSms(object):
             #Sleep 0.5 seconds
             time.sleep(0.5)
     
-    def releaseMobile(self,mobile,username):
+    def releaseMobile(self,mobile):
         pass

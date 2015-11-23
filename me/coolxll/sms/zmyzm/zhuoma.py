@@ -27,14 +27,14 @@ class Zhuoma(BaseSms):
     def login(self,username=ZHUOMA_USERNAME,password=ZHUOMA_PASSWORD):
         return super(Zhuoma,self).login(username,password)
             
-    def getMobileNum(self,pid=None,username=ZHUOMA_USERNAME):
-        return super(Zhuoma,self).getMobileNum(pid,username)
+    def getMobileNum(self,pid=None):
+        return super(Zhuoma,self).getMobileNum(pid)
     
-    def getVcodeAndReleaseMobile(self,mobile,username=ZHUOMA_USERNAME):
+    def getVcodeAndReleaseMobile(self,mobile):
         while True:
             resp = self.session.post(self.BASE_URL + 'getVcodeAndReleaseMobile',{
                 "mobile":mobile,
-                "uid":username,
+                "uid":self.username,
                 "token":self.token,
                 "author_uid":"coolxlldev1988"
             })
@@ -47,3 +47,30 @@ class Zhuoma(BaseSms):
     
     def releaseMobile(self,mobile,username=ZHUOMA_USERNAME):
         pass
+    
+    def sendSms(self,pid,mobileno,content):
+        resp = self.session.post(self.BASE_URL + 'getMobilenum',{
+                "mobile":mobileno,
+                "uid":self.username,
+                "pid":pid,
+                "token":self.token
+        })
+        logging.debug(resp.text)
+        resp = self.session.post(self.BASE_URL + 'sendSms',{
+                "uid":self.username,
+                "pid":pid,
+                "mobile":mobileno,
+                "content":content,
+                "token":self.token
+        })
+        logging.debug(resp.text)
+        while True:
+            resp = self.session.post(self.BASE_URL + 'getSmsStatus',{
+                    "uid":self.username,
+                    "pid":pid,
+                    "mobile":mobileno,
+                    "token":self.token
+            })
+            logging.debug(resp.text)
+            if resp.text == 'succ':
+                break

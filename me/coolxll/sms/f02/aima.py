@@ -27,14 +27,14 @@ class Aima(BaseSms):
     def login(self,username=AIMA_USERNAME,password=AIMA_PASSWORD):
         return super(Aima,self).login(username,password)
             
-    def getMobileNum(self,pid=None,username=AIMA_USERNAME):
-        return super(Aima,self).getMobileNum(pid,username)
+    def getMobileNum(self,pid=None):
+        return super(Aima,self).getMobileNum(pid)
     
-    def getVcodeAndReleaseMobile(self,mobile,username=AIMA_USERNAME):
+    def getVcodeAndReleaseMobile(self,mobile):
         while True:
             resp = self.session.post(self.BASE_URL + 'getVcodeAndReleaseMobile',{
                 "mobile":mobile,
-                "uid":username,
+                "uid":self.username,
                 "token":self.token,
                 "author_uid":"coolxlldev"
             })
@@ -45,9 +45,9 @@ class Aima(BaseSms):
             #Sleep 0.5 seconds
             time.sleep(0.5)
     
-    def releaseMobile(self,mobile,username=AIMA_USERNAME):
+    def releaseMobile(self,mobile):
         resp = self.session.post(self.BASE_URL + 'cancelSMSRecv',{
-            "uid":username,
+            "uid":self.username,
             "token":self.token,
             "mobile":mobile
         })
