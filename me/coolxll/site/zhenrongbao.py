@@ -57,8 +57,9 @@ class Zhenrongbao(BaseSite):
                 break
             else:
                 self.logger.error('Zhenrongbao Verify Code parse error')
-                #self.verify.reportError(imageId)
+                self.verify.reportError(imageId)
         self.sendCodeAndRegister(mobileno, invitemobile)
+        return mobileno
         
     def reg(self,invitemobile):
         self.session.setChromeUA()
