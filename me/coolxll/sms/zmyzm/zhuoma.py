@@ -15,14 +15,14 @@ class Zhuoma(BaseSms):
     Zhuoma for receiving verify sms
     '''
     
-    BASE_URL = 'http://api.zmyzm.com/apiGo.do?action='
+    BASE_URL = 'http://api.jmyzm.com/apiGo.do?action='
     logger = logging.getLogger(__name__)
 
     def __init__(self,pid=None):
         '''
         Initialize
         '''
-        super(Zhuoma,self).__init__()
+        super(Zhuoma,self).__init__(pid)
         
     def login(self,username=ZHUOMA_USERNAME,password=ZHUOMA_PASSWORD):
         return super(Zhuoma,self).login(username,password)

@@ -20,10 +20,11 @@ class BaseSms(object):
         '''
         Constructor
         '''
-        self.session = requests.Session()
-        self.login()
         if pid:
             self.pid = pid
+        self.session = requests.Session()
+        self.login()
+        
         
     def login(self,username,password):
         resp = self.session.post(self.BASE_URL + 'loginIn',{
