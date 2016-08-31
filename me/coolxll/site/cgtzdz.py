@@ -7,7 +7,7 @@ Created on 2015年11月4日
 '''
 from me.coolxll import sms
 from me.coolxll.sms.zmyzm.zhuoma import Zhuoma
-from me.coolxll.util.myrequests import CustomSession
+from me.me.coolxll.util.myrequestsport CustomSession
 import logging
 import re
 

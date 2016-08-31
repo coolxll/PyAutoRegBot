@@ -5,7 +5,7 @@ Created on 2015年10月25日
 
 @author: Conan
 '''
-from me.coolxll.util.myrequests import CustomSession
+from me.me.coolxll.util.myrequestsport CustomSession
 from me.coolxll.sms.f02.aima import Aima
 from me.coolxll.valicode.sz789.sz789 import SZ789
 import time

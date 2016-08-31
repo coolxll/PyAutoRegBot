@@ -51,6 +51,8 @@ class BaseSms(object):
         })
         if '|' in resp.text:
             mobile,token = resp.text.split('|')
+        else:
+            mobile = 'no_data'
         return mobile
     
     def getVcodeAndReleaseMobile(self,mobile):
