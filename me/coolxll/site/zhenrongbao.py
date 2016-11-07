@@ -14,6 +14,7 @@ import random
 from me.coolxll.sms.zmyzm.zhuoma import Zhuoma
 from me.coolxll.site.basesite import BaseSite
 import time
+import json
 
 ZHENRONGBAO_AIMA_PID = 9687
 ZHENRONGBAO_ZHUOMA_PID = 3444
@@ -63,7 +64,132 @@ class Zhenrongbao(BaseSite):
                 self.verify.reportError(imageId)
         self.sendCodeAndRegister(mobileno, invitemobile)
         return mobileno
-        
+    
+    def reg_amoney(self,sequencial_id):
+        self.session.setiPhoneWeixinUA()
+        self.session.get("http://activity.zhenrongbao.com/aprizetree/share?contact_from=30103_2&sequence_id={}".format(sequencial_id))
+        self.session.get("http://activity.zhenrongbao.com/aprizetree/register")
+        resp = self.session.get("https://account.zhenrongbao.com/sso/gettoken?_access_token=&_=1472828588985&callback=jsonp1")
+        respJson = self.parseJsonP(resp.text, 'jsonp1')
+        token = respJson.get("data").get("token")
+        filebuf = self.session.get("https://account.zhenrongbao.com/verify/qcode?_={}".format(int(time.time()))).content
+        yzm,imageId = self.verify.rec_buf(filebuf)
+        self.logger.debug("Verify Code:{}".format(yzm))
+        mobileno = self.sms.getMobileNum()
+        while mobileno == 'no_data':
+            time.sleep(3)
+            mobileno = self.sms.getMobileNum()
+        logging.info("获取到手机号码{}".format(mobileno))
+        resp = self.session.get("https://account.zhenrongbao.com/sso/checkregimagevcode?user_name={}&vcode={}&token={}&_access_token=&_={}&callback=jsonp2".format(
+                        mobileno,yzm,token,int(time.time())))
+        respJson = self.parseJsonP(resp.text, 'jsonp2')
+        while respJson.get('error_no') != 0:
+            self.verify.reportError(imageId)
+            filebuf = self.session.get("https://account.zhenrongbao.com/verify/qcode?_={}".format(int(time.time()))).content
+            yzm,imageId = self.verify.rec_buf(filebuf)
+            resp = self.session.get("https://account.zhenrongbao.com/sso/checkregimagevcode?user_name={}&vcode={}&token={}&_access_token=&_={}&callback=jsonp2".format(
+                        mobileno,yzm,token,int(time.time())))
+            self.logger.debug("Verify Code:{}".format(yzm))
+            respJson = self.parseJsonP(resp.text, 'jsonp2')
+        resp = self.session.get("https://account.zhenrongbao.com/sso/sendregsmsvcode?type=0&mobile={}&token={}&operate=3&_access_token=&_={}&callback=jsonp3".format(
+                        mobileno,token,int(time.time())))
+        respJson = self.parseJsonP(resp.text, 'jsonp3')
+        if respJson.get('error_no') != 0:
+            print respJson.get('error_message')
+        else:
+            print respJson
+        codemsg = self.sms.getVcodeAndReleaseMobile(mobileno)
+        codemsg = self.parseCodeMsg(codemsg)
+        resp = self.session.post("https://account.zhenrongbao.com/sso/register",{
+                'user_name':mobileno,
+                'passwd':'pass2015',
+                'platform':'wap',
+                'redirect':'http://activity.zhenrongbao.com/static/activity_account/sso/redirect.html',
+                'callback':'ZrbAccount.callback',
+                'd_id':'65d547dd41db3c38c6628444c31f3a03',
+                'd_screen':'375_667',
+                'd_timez':'8',
+                'd_sys':'Win32',
+                'code':codemsg,
+                'recommender':'',
+                'recommender_sequence_id':sequencial_id,
+                'agreement':'true'
+            })
+        logging.info(resp.text)
+        #self.session.get("http://activity.zhenrongbao.com/aprizetree/share?contact_from=30101&sequence_id={}".format(sequencial_id))
+        r = self.session.get("http://activity.zhenrongbao.com/aprizetree/aftersuccess")
+        r = self.session.post("http://activity.zhenrongbao.com/aprizetree/beforesuccess",{
+            "_access_token":""
+        }) 
+        r = self.session.post("http://activity.zhenrongbao.com/aprizetree/beforesuccess",{
+            "_access_token":""
+        }) 
+        r = self.session.post("http://activity.zhenrongbao.com/aprizetree/beforesuccess",{
+            "_access_token":""
+        }) 
+
+    def aevelen(self,sequencial_id):
+        self.session.setiPhoneWeixinUA()
+        self.session.get("http://activity.zhenrongbao.com/aeleven/index?contact_from=30116_4&sequence_id={}".format(sequencial_id))
+        self.regMobile(sequencial_id)
+        self.session.get("http://activity.zhenrongbao.com/aeleven/beforesuccess")
+        self.session.get("http://activity.zhenrongbao.com/aeleven/index?autoplay=1")
+        self.session.get("http://activity.zhenrongbao.com/aeleven/save")
+
+    def reg_amoney1(self,sequencial_id):
+        self.session.setiPhoneWeixinUA()
+        self.session.get("http://activity.zhenrongbao.com/amoneygame/share?contact_from=30106_3&sequence_id={}".format(sequencial_id))
+        self.session.get("http://activity.zhenrongbao.com/amoneygame/register")
+        resp = self.session.get("https://account.zhenrongbao.com/sso/gettoken?_access_token=&_=1472828588985&callback=jsonp1")
+        respJson = self.parseJsonP(resp.text, 'jsonp1')
+        token = respJson.get("data").get("token")
+#         print token
+        filebuf = self.session.get("https://account.zhenrongbao.com/verify/qcode?_={}".format(int(time.time()))).content
+        yzm,imageId = self.verify.rec_buf(filebuf)
+        self.logger.debug("Verify Code:{}".format(yzm))
+        mobileno = self.sms.getMobileNum()
+        while mobileno == 'no_data':
+            time.sleep(3)
+            mobileno = self.sms.getMobileNum()
+        logging.info("获取到手机号码{}".format(mobileno))
+        resp = self.session.get("https://account.zhenrongbao.com/sso/checkregimagevcode?user_name={}&vcode={}&token={}&_access_token=&_={}&callback=jsonp2".format(
+                        mobileno,yzm,token,int(time.time())))
+        respJson = self.parseJsonP(resp.text, 'jsonp2')
+        while respJson.get('error_no') != 0:
+            self.verify.reportError(imageId)
+            filebuf = self.session.get("https://account.zhenrongbao.com/verify/qcode?_={}".format(int(time.time()))).content
+            yzm,imageId = self.verify.rec_buf(filebuf)
+            resp = self.session.get("https://account.zhenrongbao.com/sso/checkregimagevcode?user_name={}&vcode={}&token={}&_access_token=&_={}&callback=jsonp2".format(
+                        mobileno,yzm,token,int(time.time())))
+            self.logger.debug("Verify Code:{}".format(yzm))
+            respJson = self.parseJsonP(resp.text, 'jsonp2')
+        resp = self.session.get("https://account.zhenrongbao.com/sso/sendregsmsvcode?type=0&mobile={}&token={}&operate=3&_access_token=&_={}&callback=jsonp3".format(
+                        mobileno,token,int(time.time())))
+        respJson = self.parseJsonP(resp.text, 'jsonp3')
+        if respJson.get('error_no') != 0:
+            print respJson.get('error_message')
+        else:
+            print respJson
+        codemsg = self.sms.getVcodeAndReleaseMobile(mobileno)
+        codemsg = self.parseCodeMsg(codemsg)
+        resp = self.session.post("https://account.zhenrongbao.com/sso/register",{
+                'user_name':mobileno,
+                'passwd':'pass2015',
+                'platform':'wap',
+                'redirect':'http://activity.zhenrongbao.com/static/activity_account/sso/redirect.html',
+                'callback':'ZrbAccount.callback',
+                'd_id':'65d547dd41db3c38c6628444c31f3a03',
+                'd_screen':'375_667',
+                'd_timez':'8',
+                'd_sys':'Win32',
+                'code':codemsg,
+                'recommender':'',
+                'recommender_sequence_id':sequencial_id,
+                'agreement':'true'
+            })
+        #logging.info(resp.text)
+        #self.session.get("http://activity.zhenrongbao.com/aprizetree/share?contact_from=30101&sequence_id={}".format(sequencial_id))
+        r = self.session.get("http://activity.zhenrongbao.com/amoneygame/index")
     def reg(self,invitemobile):
         self.session.setChromeUA()
         self.session.get(self.BASE_URL + "/account/register")
@@ -121,4 +247,63 @@ class Zhenrongbao(BaseSite):
         })
         if resp.json().get("error_no") == 0:
             self.logger.info("Register New User Successful, Username {}".format(mobileno))
+    
+       
+    def parseJsonP(self,jsonpStr,callback):
+        return json.loads(jsonpStr.lstrip(callback + '(') .rstrip(')'))
+
+    def regMobile(self, sequencial_id):
+        self.session.get("http://activity.zhenrongbao.com/aprizetree/register")
+        resp = self.session.get(
+            "https://account.zhenrongbao.com/sso/gettoken?_access_token=&_=1472828588985&callback=jsonp1")
+        respJson = self.parseJsonP(resp.text, 'jsonp1')
+        token = respJson.get("data").get("token")
+        filebuf = self.session.get("https://account.zhenrongbao.com/verify/qcode?_={}".format(int(time.time()))).content
+        yzm, imageId = self.verify.rec_buf(filebuf)
+        self.logger.debug("Verify Code:{}".format(yzm))
+        mobileno = self.sms.getMobileNum()
+        while mobileno == 'no_data':
+            time.sleep(3)
+            mobileno = self.sms.getMobileNum()
+        logging.info("获取到手机号码{}".format(mobileno))
+        resp = self.session.get(
+            "https://account.zhenrongbao.com/sso/checkregimagevcode?user_name={}&vcode={}&token={}&_access_token=&_={}&callback=jsonp2".format(
+                mobileno, yzm, token, int(time.time())))
+        respJson = self.parseJsonP(resp.text, 'jsonp2')
+        while respJson.get('error_no') != 0:
+            self.verify.reportError(imageId)
+            filebuf = self.session.get(
+                "https://account.zhenrongbao.com/verify/qcode?_={}".format(int(time.time()))).content
+            yzm, imageId = self.verify.rec_buf(filebuf)
+            resp = self.session.get(
+                "https://account.zhenrongbao.com/sso/checkregimagevcode?user_name={}&vcode={}&token={}&_access_token=&_={}&callback=jsonp2".format(
+                    mobileno, yzm, token, int(time.time())))
+            self.logger.debug("Verify Code:{}".format(yzm))
+            respJson = self.parseJsonP(resp.text, 'jsonp2')
+        resp = self.session.get(
+            "https://account.zhenrongbao.com/sso/sendregsmsvcode?type=0&mobile={}&token={}&operate=3&_access_token=&_={}&callback=jsonp3".format(
+                mobileno, token, int(time.time())))
+        respJson = self.parseJsonP(resp.text, 'jsonp3')
+        if respJson.get('error_no') != 0:
+            print respJson.get('error_message')
+        else:
+            print respJson
+        codemsg = self.sms.getVcodeAndReleaseMobile(mobileno)
+        codemsg = self.parseCodeMsg(codemsg)
+        resp = self.session.post("https://account.zhenrongbao.com/sso/register", {
+            'user_name': mobileno,
+            'passwd': 'pass2015',
+            'platform': 'wap',
+            'redirect': 'http://activity.zhenrongbao.com/static/activity_account/sso/redirect.html',
+            'callback': 'ZrbAccount.callback',
+            'd_id': '65d547dd41db3c38c6628444c31f3a03',
+            'd_screen': '375_667',
+            'd_timez': '8',
+            'd_sys': 'Win32',
+            'code': codemsg,
+            'recommender': '',
+            'recommender_sequence_id': sequencial_id,
+            'agreement': 'true'
+        })
+        logging.info(resp.text)
         
