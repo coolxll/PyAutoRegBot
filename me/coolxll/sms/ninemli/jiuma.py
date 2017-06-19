@@ -42,7 +42,6 @@ class JiuMa(BaseSms):
             if resp.text != 'not_receive':
                 print resp.text
                 return resp.text.split('|')[1]
-                break
             #Sleep 0.5 seconds
             time.sleep(1)
     

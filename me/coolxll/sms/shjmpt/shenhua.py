@@ -5,7 +5,7 @@ Created on 2015年10月24日
 
 @author: Conan
 '''
-from me.coolxll.config.config import SHENMA_USERNAME as USERNAME,SHENMA_PASSWORD as PASSWORD
+from me.coolxll.config.config import SHENHUA_USERNAME as USERNAME,SHENHUA_PASSWORD as PASSWORD
 import logging
 import time
 from me.coolxll.sms.basesms import BaseSms
@@ -42,7 +42,7 @@ class Shenhua(BaseSms):
             "token":self.token,
             "ItemId":pid
         })
-        return resp.text
+        return resp.text.rstrip(';')
     
     def getVcodeAndReleaseMobile(self,mobile):
         while True:
@@ -51,10 +51,11 @@ class Shenhua(BaseSms):
                 "token":self.token,
                 "ItemId":self.pid
             })
-            if resp.text != '':
+            if resp.text != u'False:没有状态或短信，请5秒后再试试':
                 msg,pid,mobile,smscontent = resp.text.split('&')
                 if smscontent != '':
-                    break
+                    self.logger.info(smscontent)
+                    return smscontent
             #Sleep 5 seconds
             time.sleep(5)
     

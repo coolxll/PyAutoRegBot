@@ -178,7 +178,7 @@ class Zhenrongbao(BaseSite):
                 'platform':'wap',
                 'redirect':'http://activity.zhenrongbao.com/static/activity_account/sso/redirect.html',
                 'callback':'ZrbAccount.callback',
-                'd_id':'65d547dd41db3c38c6628444c31f3a03',
+                'd_id':'afb5a01d6c4aac6c9a71c10c86b138e0',
                 'd_screen':'375_667',
                 'd_timez':'8',
                 'd_sys':'Win32',
@@ -197,9 +197,10 @@ class Zhenrongbao(BaseSite):
             #yzm,imageId = self.verify.rec_buf(filebuf)
             #self.logger.debug("Verify Code:{}".format(yzm))
         mobileno = self.sms.getMobileNum()
-        while mobileno == 'no_data':
+        while mobileno == u'False:Session 过期':
             time.sleep(3)
             mobileno = self.sms.getMobileNum()
+        self.logger.info("获取到号码{}".format(mobileno))
         self.sendCodeAndRegister(mobileno, invitemobile)
         return mobileno
     
@@ -208,7 +209,7 @@ class Zhenrongbao(BaseSite):
         resp = self.session.post(self.BASE_URL + "/account/checksendregsmsvcode",{
             "mobile":mobileno,
             "_access_token":"",
-            "d_id":"cb7a7f5d72cc91172dc9c5e3197d4139",
+            "d_id":"a22afcb604eb105169864eb61b742625",   #"cb7a7f5d72cc91172dc9c5e3197d4139",
             "platform":"pc",
             "d_screen":"1920_1080",
             "d_timez":"8",
@@ -219,7 +220,7 @@ class Zhenrongbao(BaseSite):
             "type":0,
             "operate":3,
             "_access_token":"",
-            "d_id":"cb7a7f5d72cc91172dc9c5e3197d4139",
+            "d_id":"a22afcb604eb105169864eb61b742625",
             "platform":"pc",
             "d_screen":"1920_1080",
             "d_timez":"8",
@@ -238,7 +239,7 @@ class Zhenrongbao(BaseSite):
             "code":codemsg,
             "passwd":"pass2015",
             "_access_token":"",
-            "d_id":"cb7a7f5d72cc91172dc9c5e3197d4139",
+            "d_id":"a22afcb604eb105169864eb61b742625",
             "d_screen":"1920_1080",
             "d_timez":"8",
             "d_sys":"Win32",

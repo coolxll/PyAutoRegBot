@@ -16,12 +16,12 @@ from me.coolxll.sms.ninemli.jiuma import JiuMa
 if __name__ == '__main__':
     logfile = open('zhenrongbao_no.log','ab')
     logging.basicConfig(level=logging.DEBUG)
-    times = 1
+    times = 2
     for _ in xrange(times):
         #z = Zhenrongbao(sms=Aima()) #if need to use Aima as SMS
-        sms = JiuMa(5844)
+        sms = Shenhua(1731)
         z = Zhenrongbao(sms) #Default sms platform change to Zhuoma
-        #z.session.setProxy()
+        # z.session.setProxy()
         #18916550925 612fa1533d9b1685817807ecf4231223
         #18621369382 4c164b29b0a09a512917b04a344d3b6d
 #         mobileno = z.regwap('612fa1533d9b1685817807ecf4231223') #zlf
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 #         mobileno = z.regwap('4c164b29b0a09a512917b04a344d3b6d') #xll
 #         logfile.write(mobileno + ',')
         z.session.verify=False 
-        mobileno = z.reg(18916550925)
+        mobileno = z.reg(18621369382)
         logfile.write(mobileno + '\r\n')
     logfile.close()
         
