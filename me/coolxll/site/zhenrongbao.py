@@ -205,11 +205,12 @@ class Zhenrongbao(BaseSite):
         return mobileno
     
     def sendCodeAndRegister(self,mobileno,recommender):
+        d_id = 'b0337807774efff8'
         #self.session.get(self.BASE_URL + "/account/registering")
         resp = self.session.post(self.BASE_URL + "/account/checksendregsmsvcode",{
             "mobile":mobileno,
             "_access_token":"",
-            "d_id":"a22afcb604eb105169864eb61b742625",   #"cb7a7f5d72cc91172dc9c5e3197d4139",
+            "d_id":d_id,   #"cb7a7f5d72cc91172dc9c5e3197d4139",
             "platform":"pc",
             "d_screen":"1920_1080",
             "d_timez":"8",
@@ -220,7 +221,7 @@ class Zhenrongbao(BaseSite):
             "type":0,
             "operate":3,
             "_access_token":"",
-            "d_id":"a22afcb604eb105169864eb61b742625",
+            "d_id":d_id,
             "platform":"pc",
             "d_screen":"1920_1080",
             "d_timez":"8",
@@ -239,7 +240,7 @@ class Zhenrongbao(BaseSite):
             "code":codemsg,
             "passwd":"pass2015",
             "_access_token":"",
-            "d_id":"a22afcb604eb105169864eb61b742625",
+            "d_id":d_id,
             "d_screen":"1920_1080",
             "d_timez":"8",
             "d_sys":"Win32",
